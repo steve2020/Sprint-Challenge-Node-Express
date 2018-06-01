@@ -98,4 +98,38 @@ server.delete('/api/projects/:id', (req, res) => {
         });
 });
 
+//get all actions or action by id using query
+server.get('/api/actions', (req, res) => {
+    const { id } = req.query;
+    actionModel
+        .get(id)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The requested tags could not be retrieved.", res);
+            return;
+        });
+});
+
+//add action
+server.post('/api/actions/:id', (req, res) => {
+    const project_id = req.params.id
+    const { description } = req.body;
+    if (!req.body) {
+        sendUserError(400, "Please provide action.", res);
+        return;
+    }
+    actionModel
+        .insert( project_id, { description })
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The action could not be created.", res);
+            console.log(error);
+            return;
+        });
+});
+
 server.listen(5000, () => console.log('server running on 5000'));
