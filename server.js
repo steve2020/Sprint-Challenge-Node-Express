@@ -28,7 +28,7 @@ server.get('/api/projects', (req, res) => {
         });
 });
 
-//get project actions by id:
+//get list of project actions by id:
 server.get('/api/projects/:id', (req, res) => {
     const id = req.params.id;
     projectModel
