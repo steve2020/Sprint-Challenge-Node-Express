@@ -113,15 +113,14 @@ server.get('/api/actions', (req, res) => {
 });
 
 //add action
-server.post('/api/actions/:id', (req, res) => {
-    const project_id = req.params.id
-    const { description } = req.body;
+server.post('/api/actions/', (req, res) => {
+    const { project_id, description, notes } = req.body;
     if (!req.body) {
         sendUserError(400, "Please provide action.", res);
         return;
     }
     actionModel
-        .insert( project_id, { description })
+        .insert({ project_id, description, notes })
         .then(result => {
             res.json(result);
         })
