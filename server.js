@@ -131,4 +131,40 @@ server.post('/api/actions/', (req, res) => {
         });
 });
 
+//update action:
+server.put('/api/actions/:id', (req, res) => {
+    const { project_id, description, notes } = req.body;
+    const id = req.params.id;
+    actionModel
+        .update(id, {  project_id, description, notes })
+        .then(result => {
+            if (result.length === 0) {
+                sendUserError(404, 'The action with the specified ID does not exist.', res);
+                return;
+            }
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The action could not be updated.", res);
+        });
+});
+
+//delete action
+server.delete('/api/actions/:id', (req, res) => {
+    const id = req.params.id;
+    actionModel
+        .remove(id)
+        .then(result => {
+            if (result.length === 0) {
+                sendUserError(404, 'The action with the specified ID does not exist.', res);
+                return;
+            }
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The action could not be removed.", res);
+        });
+});
+
+
 server.listen(5000, () => console.log('server running on 5000'));
