@@ -42,6 +42,60 @@ server.get('/api/projects/:id', (req, res) => {
         });
 });
 
+//add project:
+server.post('/api/projects', (req, res) => {
+    const { name, description } = req.body;
+    if (!name || !description) {
+        sendUserError(400, "Please provide name and description of the project.", res);
+        return;
+    }
+    projectModel
+        .insert({ name, description })
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The project could not be created.", res);
+            return;
+        });
+});
 
+//edit project:
+server.put('/api/projects/:id', (req, res) => {
+    const { name, description } = req.body;
+    const id = req.params.id;
+    projectModel
+        .update(id, { name, description })
+        .then(result => {
+            if (result.length === 0) {
+                sendUserError(404, 'The post with the specified ID does not exist.', res);
+                return;
+            }
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The user could not be updated.", res);
+            console.log(error);
+            return;
+        });
+});
+
+//delete project
+server.delete('/api/projects/:id', (req, res) => {
+    const id = req.params.id;
+    projectModel
+        .remove(id)
+        .then(result => {
+            if (result.length === 0) {
+                sendUserError(404, 'The post with the specified ID does not exist.', res);
+                return;
+            }
+            res.json(result);
+        })
+        .catch(error => {
+            sendUserError(500, "The user could not be updated.", res);
+            return;
+        });
+});
 
 server.listen(5000, () => console.log('server running on 5000'));
